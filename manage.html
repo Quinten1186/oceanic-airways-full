@@ -4,12 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Manage Booking | Oceanic Airways</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
     <style>
       :root {
         --navy: #0d2340;
@@ -20,22 +14,15 @@
         --muted: #5b7288;
         --white: #ffffff;
         --border: rgba(18,49,78,0.08);
-        --shadow: 0 22px 45px rgba(9, 27, 47, 0.12);
+        --shadow: 0 22px 45px rgba(9,27,47,0.12);
       }
 
       * { box-sizing: border-box; }
-
       body {
         margin: 0;
-        font-family: "Inter", sans-serif;
-        background: linear-gradient(180deg, #eef7ff 0%, #f7fbff 100%);
+        font-family: Arial, sans-serif;
+        background: #eef7ff;
         color: var(--text);
-      }
-
-      a { text-decoration: none; color: inherit; }
-
-      button, input {
-        font: inherit;
       }
 
       .container {
@@ -44,12 +31,8 @@
       }
 
       .site-header {
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        background: rgba(13, 35, 64, 0.9);
-        backdrop-filter: blur(16px);
-        border-bottom: 1px solid rgba(255,255,255,0.08);
+        background: var(--navy);
+        color: var(--white);
       }
 
       .nav-wrap {
@@ -60,32 +43,18 @@
       }
 
       .brand {
-        color: var(--white);
-        font-size: 1.16rem;
-        font-weight: 800;
-        letter-spacing: 0.04em;
+        font-size: 1.2rem;
+        font-weight: 700;
       }
 
       .main-nav {
         display: flex;
-        gap: 24px;
-        color: rgba(255,255,255,0.82);
-        font-size: 0.96rem;
+        gap: 18px;
       }
 
       .main-nav a {
-        position: relative;
-        padding: 8px 0;
-      }
-
-      .main-nav a:hover::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: -8px;
-        height: 2px;
-        background: var(--gold);
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
       }
 
       .page-shell {
@@ -93,32 +62,16 @@
       }
 
       .panel {
-        background: rgba(255,255,255,0.96);
+        background: rgba(255,255,255,0.95);
         border: 1px solid var(--border);
-        border-radius: 24px;
+        border-radius: 18px;
         box-shadow: var(--shadow);
         padding: 22px;
-      }
-
-      .eyebrow {
-        margin: 0 0 10px;
-        text-transform: uppercase;
-        letter-spacing: 0.15em;
-        font-size: 0.72rem;
-        font-weight: 800;
-        color: var(--gold);
-      }
-
-      h1 {
-        margin: 0;
-        font-size: clamp(2rem, 3vw, 3rem);
-        letter-spacing: -0.05em;
       }
 
       .manage-form {
         display: grid;
         gap: 18px;
-        margin-top: 18px;
       }
 
       label {
@@ -135,58 +88,18 @@
         border-radius: 12px;
         border: 1px solid rgba(18,49,78,0.12);
         background: #f7fbff;
-        color: var(--text);
         padding: 0 14px;
       }
 
       .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
         min-height: 52px;
         padding: 0 22px;
-        border-radius: 14px;
-        font-weight: 700;
+        border-radius: 12px;
         border: none;
-        cursor: pointer;
-        transition: transform 0.2s ease;
-      }
-
-      .btn:hover {
-        transform: translateY(-1px);
-      }
-
-      .btn-primary {
         background: linear-gradient(135deg, var(--blue), var(--blue-2));
         color: var(--white);
-        box-shadow: 0 18px 32px rgba(25, 90, 170, 0.28);
-      }
-
-      .manage-result {
-        margin-top: 18px;
-      }
-
-      .booking-detail-box,
-      .booking-confirmation {
-        background: #f4f9ff;
-        border: 1px solid rgba(31,120,209,0.12);
-        border-radius: 18px;
-        padding: 18px;
-      }
-
-      .site-footer {
-        background: var(--navy);
-        color: rgba(255,255,255,0.8);
-        padding: 18px 0;
-      }
-
-      .footer-inner {
-        display: flex;
-        justify-content: center;
-      }
-
-      @media (max-width: 860px) {
-        .main-nav { display: none; }
+        font-weight: 700;
+        cursor: pointer;
       }
     </style>
   </head>
@@ -195,10 +108,10 @@
     <header class="site-header">
       <div class="container nav-wrap">
         <div class="brand">✈️ Oceanic Airways</div>
-        <nav class="main-nav" aria-label="Main navigation">
+        <nav class="main-nav">
           <a href="index.html">Home</a>
           <a href="search.html">Search Flights</a>
-          <a href="manage.html" class="active">Manage Booking</a>
+          <a href="manage.html">Manage Booking</a>
           <a href="about.html">About</a>
           <a href="contact.html">Contact</a>
         </nav>
@@ -207,13 +120,12 @@
 
     <main class="page-shell container">
       <section class="panel">
-        <p class="eyebrow">My trip</p>
         <h1>Manage your booking</h1>
 
         <form id="manage-form" class="manage-form">
           <label>
             Booking reference
-            <input type="text" id="bookingRefInput" placeholder="OA-12345" required />
+            <input type="text" id="bookingRefInput" required />
           </label>
 
           <label>
@@ -221,18 +133,12 @@
             <input type="email" id="bookingEmailInput" required />
           </label>
 
-          <button type="submit" class="btn btn-primary">Find booking</button>
+          <button type="submit" class="btn">Find booking</button>
         </form>
 
-        <div id="manage-result" class="manage-result"></div>
+        <div id="manage-result"></div>
       </section>
     </main>
-
-    <footer class="site-footer">
-      <div class="container footer-inner">
-        <p>© 2024 Oceanic Airways</p>
-      </div>
-    </footer>
 
     <script src="script.js"></script>
   </body>
