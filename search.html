@@ -1,170 +1,257 @@
-const STORAGE_KEYS = {
-  search: "oceanic-search",
-  selectedFlight: "oceanic-selected-flight"
-};
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search Flights | Oceanic Airways</title>
+    <style>
+      :root {
+        --navy: #0d2340;
+        --blue: #2a7de1;
+        --blue-2: #154d94;
+        --gold: #f4c96b;
+        --text: #12314e;
+        --muted: #5b7288;
+        --white: #ffffff;
+        --border: rgba(18,49,78,0.08);
+        --shadow: 0 22px 45px rgba(9,27,47,0.12);
+      }
 
-const airportMap = {
-  BNE: "Brisbane",
-  SYD: "Sydney",
-  MEL: "Melbourne",
-  PER: "Perth",
-  LAX: "Los Angeles",
-  SIN: "Singapore",
-  DXB: "Dubai",
-  HKG: "Hong Kong"
-};
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #eef7ff;
+        color: var(--text);
+      }
 
-const flights = [
-  { id: "OA-101", from: "BNE", to: "SYD", time: "08:15", duration: "2h 10m", price: 249, aircraft: "A320", seats: 12 },
-  { id: "OA-204", from: "BNE", to: "SIN", time: "22:45", duration: "8h 30m", price: 899, aircraft: "A350", seats: 8 },
-  { id: "OA-178", from: "SYD", to: "LAX", time: "11:30", duration: "13h 45m", price: 1299, aircraft: "B787", seats: 10 },
-  { id: "OA-312", from: "MEL", to: "DXB", time: "01:40", duration: "15h 05m", price: 1499, aircraft: "A380", seats: 5 },
-  { id: "OA-440", from: "PER", to: "HKG", time: "18:20", duration: "9h 15m", price: 1099, aircraft: "B777", seats: 15 },
-  { id: "OA-512", from: "SYD", to: "SIN", time: "09:55", duration: "7h 50m", price: 739, aircraft: "A330", seats: 16 },
-  { id: "OA-620", from: "LAX", to: "BNE", time: "16:05", duration: "15h 00m", price: 1349, aircraft: "B787", seats: 7 },
-  { id: "OA-894", from: "DXB", to: "MEL", time: "03:10", duration: "14h 20m", price: 1389, aircraft: "A380", seats: 11 }
-];
+      .container {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+      }
 
-function money(value) {
-  return new Intl.NumberFormat("en-AU", {
-    style: "currency",
-    currency: "AUD",
-    maximumFractionDigits: 0
-  }).format(value);
-}
+      .site-header {
+        background: var(--navy);
+        color: var(--white);
+      }
 
-function saveToStorage(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
-}
+      .nav-wrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 72px;
+      }
 
-function readFromStorage(key, fallback = null) {
-  try {
-    const raw = localStorage.getItem(key);
-    if (!raw) return fallback;
-    return JSON.parse(raw);
-  } catch {
-    return fallback;
-  }
-}
+      .brand {
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
 
-function getDefaultSearch() {
-  return {
-    from: "BNE",
-    to: "SYD",
-    depart: "2024-10-20",
-    return: "2024-10-27",
-    passengers: "1"
-  };
-}
+      .main-nav {
+        display: flex;
+        gap: 18px;
+      }
 
-function filterFlights(search) {
-  const from = search?.from;
-  const to = search?.to;
+      .main-nav a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+      }
 
-  if (!from || !to) return flights;
+      .page-shell {
+        padding: 40px 0;
+      }
 
-  return flights.filter((flight) => flight.from === from && flight.to === to);
-}
+      .panel {
+        background: rgba(255,255,255,0.95);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        padding: 22px;
+      }
 
-function renderResults() {
-  const resultsBox = document.getElementById("flight-results");
-  const metaBox = document.getElementById("results-meta");
+      .flight-form {
+        display: grid;
+        gap: 18px;
+      }
 
-  if (!resultsBox) return;
+      .field-grid {
+        display: grid;
+        gap: 16px;
+      }
 
-  const search = readFromStorage(STORAGE_KEYS.search, getDefaultSearch());
-  const list = filterFlights(search);
+      .five-col {
+        grid-template-columns: repeat(5, minmax(120px, 1fr));
+      }
 
-  if (!list.length) {
-    resultsBox.innerHTML = `
-      <div class="panel" style="padding: 20px;">
-        <h3>No flights found</h3>
-        <p>Try another route or change the dates.</p>
+      label {
+        display: grid;
+        gap: 8px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--muted);
+      }
+
+      input, select {
+        width: 100%;
+        min-height: 48px;
+        border-radius: 12px;
+        border: 1px solid rgba(18,49,78,0.12);
+        background: #f7fbff;
+        padding: 0 14px;
+      }
+
+      .btn {
+        min-height: 52px;
+        padding: 0 22px;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(135deg, var(--blue), var(--blue-2));
+        color: var(--white);
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .flight-results {
+        display: grid;
+        gap: 16px;
+        margin-top: 20px;
+      }
+
+      .flight-card {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr auto;
+        gap: 18px;
+        align-items: center;
+        padding: 18px;
+        background: #f7fbff;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+      }
+
+      .flight-route {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .airport-block {
+        display: grid;
+        gap: 6px;
+      }
+
+      .airport-block strong {
+        font-size: 1.4rem;
+      }
+
+      .route-line {
+        width: 120px;
+        text-align: center;
+        color: var(--muted);
+      }
+
+      .line {
+        height: 2px;
+        background: rgba(18,49,78,0.2);
+        margin-top: 6px;
+      }
+
+      .flight-price {
+        text-align: right;
+      }
+
+      .flight-price strong {
+        display: block;
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+      }
+
+      @media (max-width: 860px) {
+        .five-col { grid-template-columns: 1fr; }
+        .flight-card { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="site-header">
+      <div class="container nav-wrap">
+        <div class="brand">✈️ Oceanic Airways</div>
+        <nav class="main-nav">
+          <a href="index.html">Home</a>
+          <a href="search.html">Search Flights</a>
+          <a href="manage.html">Manage Booking</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
       </div>
-    `;
-    metaBox.textContent = "0 flights";
-    return;
-  }
+    </header>
 
-  metaBox.textContent = `${list.length} flights available`;
+    <main class="page-shell container">
+      <section class="panel">
+        <h1>Choose your route</h1>
 
-  resultsBox.innerHTML = list.map((flight) => `
-    <article class="flight-card">
-      <div class="flight-route">
-        <div class="airport-block">
-          <span>${airportMap[flight.from]}</span>
-          <strong>${flight.from}</strong>
-        </div>
+        <form id="search-form" class="flight-form">
+          <div class="field-grid five-col">
+            <label>
+              From
+              <select name="from" required>
+                <option value="BNE">Brisbane (BNE)</option>
+                <option value="SYD">Sydney (SYD)</option>
+                <option value="MEL">Melbourne (MEL)</option>
+                <option value="PER">Perth (PER)</option>
+                <option value="SIN">Singapore (SIN)</option>
+                <option value="DXB">Dubai (DXB)</option>
+                <option value="LAX">Los Angeles (LAX)</option>
+                <option value="HKG">Hong Kong (HKG)</option>
+              </select>
+            </label>
 
-        <div class="route-line">
-          <span>${flight.duration}</span>
-          <span class="line"></span>
-        </div>
+            <label>
+              To
+              <select name="to" required>
+                <option value="SYD">Sydney (SYD)</option>
+                <option value="BNE">Brisbane (BNE)</option>
+                <option value="MEL">Melbourne (MEL)</option>
+                <option value="PER">Perth (PER)</option>
+                <option value="SIN">Singapore (SIN)</option>
+                <option value="DXB">Dubai (DXB)</option>
+                <option value="LAX">Los Angeles (LAX)</option>
+                <option value="HKG">Hong Kong (HKG)</option>
+              </select>
+            </label>
 
-        <div class="airport-block">
-          <span>${airportMap[flight.to]}</span>
-          <strong>${flight.to}</strong>
-        </div>
-      </div>
+            <label>
+              Depart
+              <input type="date" name="depart" required />
+            </label>
 
-      <div class="flight-meta">
-        <span><strong>Departs:</strong> ${flight.time}</span>
-        <span><strong>Aircraft:</strong> ${flight.aircraft}</span>
-        <span><strong>Seats left:</strong> ${flight.seats}</span>
-      </div>
+            <label>
+              Return
+              <input type="date" name="return" />
+            </label>
 
-      <div class="flight-price">
-        <strong>${money(flight.price)}</strong>
-        <button class="btn btn-primary select-flight" data-flight-id="${flight.id}">
-          Select
-        </button>
-      </div>
-    </article>
-  `).join("");
+            <label>
+              Travelers
+              <select name="passengers">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+            </label>
+          </div>
 
-  document.querySelectorAll(".select-flight").forEach((button) => {
-    button.addEventListener("click", () => {
-      const selected = flights.find((flight) => flight.id === button.dataset.flightId);
-      if (!selected) return;
+          <button type="submit" class="btn">Update results</button>
+        </form>
+      </section>
 
-      saveToStorage(STORAGE_KEYS.selectedFlight, selected);
-      window.location.href = "booking.html";
-    });
-  });
-}
+      <section class="panel">
+        <h2>Available flights</h2>
+        <div id="results-meta">Loading...</div>
+        <div id="flight-results" class="flight-results"></div>
+      </section>
+    </main>
 
-function setupSearchForm() {
-  const form = document.getElementById("search-form");
-  if (!form) return;
-
-  const search = readFromStorage(STORAGE_KEYS.search, getDefaultSearch());
-
-  form.from.value = search.from || "BNE";
-  form.to.value = search.to || "SYD";
-  form.depart.value = search.depart || "2024-10-20";
-  form.return.value = search.return || "2024-10-27";
-  form.passengers.value = search.passengers || "1";
-
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    const formData = new FormData(form);
-
-    const newSearch = {
-      from: formData.get("from"),
-      to: formData.get("to"),
-      depart: formData.get("depart"),
-      return: formData.get("return"),
-      passengers: formData.get("passengers") || "1"
-    };
-
-    saveToStorage(STORAGE_KEYS.search, newSearch);
-    renderResults();
-  });
-
-  renderResults();
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  setupSearchForm();
-});
+    <script src="script.js"></script>
+  </body>
+</html>
